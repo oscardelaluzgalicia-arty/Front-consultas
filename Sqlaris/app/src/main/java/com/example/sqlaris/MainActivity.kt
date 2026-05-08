@@ -5,23 +5,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.sqlaris.ui.theme.SqlarisTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,11 +32,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SqlarisTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
                     WelcomeScreen(
-                        modifier = Modifier.padding(innerPadding),
                         onStartClicked = {
-                            // Ahora navegamos a la pantalla de conexiones
                             startActivity(Intent(this, ConnectionsActivity::class.java))
                         }
                     )
@@ -46,71 +49,123 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun WelcomeScreen(
-    modifier: Modifier = Modifier,
     onStartClicked: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
             .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 48.dp)
     ) {
+        // Logotipo corporativo de alto contraste
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .border(
+                    width = 2.dp,
+                    brush = Brush.linearGradient(
+                        colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(12.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "S",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         Text(
-            text = "Bienvenido a Sqlaris",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            text = "EXPLORA TUS DATOS CON SQLARIS",
+            style = MaterialTheme.typography.displaySmall.copy(
+                letterSpacing = 0.5.sp,
+                fontWeight = FontWeight.ExtraBold
+            ),
+            color = MaterialTheme.colorScheme.primary,
+            lineHeight = 40.sp
         )
         
         Spacer(modifier = Modifier.height(16.dp))
         
         Text(
-            text = "Tu cliente móvil de consulta y exportación de datos SQL.",
+            text = "Plataforma avanzada de análisis y reporting para entornos corporativos.",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+        )
+        
+        Spacer(modifier = Modifier.height(40.dp))
+        
+        Text(
+            text = "CAPACIDADES DEL SISTEMA",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.secondary
         )
         
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        Text(
-            text = "Sqlaris está diseñado para conectarse dinámicamente a múltiples bases de datos SQL remotas de forma segura. Permite explorar tablas, ejecutar consultas dinámicas y exportar resultados directamente desde tu dispositivo móvil.",
-            style = MaterialTheme.typography.bodyLarge
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        Text(
-            text = "Funciones principales:",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold
-        )
+        Spacer(modifier = Modifier.height(16.dp))
         
         val features = listOf(
-            "Conexión dinámica a múltiples motores SQL",
-            "Gestión segura de sesiones mediante JWT",
-            "Exploración de tablas y columnas",
-            "Ejecución de consultas dinámicas de solo lectura",
-            "Exportación de datos a archivos Excel",
-            "Arquitectura segura con backend FastAPI"
+            "Conexión dinámica multi-motor",
+            "Gestión de sesiones segura",
+            "Exploración de esquemas en tiempo real",
+            "Exportación de informes nativa",
+            "Interfaz de análisis de datos optimizada"
         )
         
         features.forEach { feature ->
-            Text(
-                text = "• $feature",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+            FeatureItem(feature)
         }
 
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
         Button(
             onClick = onStartClicked,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.Black
+            ),
+            shape = RoundedCornerShape(8.dp)
         ) {
-            Text("Comenzar")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("ACCEDER AL PANEL", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(Icons.Default.ArrowForward, contentDescription = null)
+            }
         }
+    }
+}
+
+@Composable
+fun FeatureItem(text: String) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.CheckCircle,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.size(20.dp)
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 

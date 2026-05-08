@@ -5,20 +5,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import com.example.sqlaris.ui.theme.SqlarisTheme
+import com.example.sqlaris.ui.theme.GreenSuccess
+import com.example.sqlaris.ui.theme.RedError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -38,18 +45,31 @@ class ConnectionsActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         CenterAlignedTopAppBar(
-                            title = { Text("Sqlaris-conecciones") }
+                            title = { 
+                                Text(
+                                    "Mis Conexiones", 
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold
+                                ) 
+                            },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                            )
                         )
                     },
                     floatingActionButton = {
                         FloatingActionButton(
                             onClick = {
                                 startActivity(Intent(this, LoginActivity::class.java))
-                            }
+                            },
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color.White,
+                            shape = RoundedCornerShape(16.dp)
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Nueva conexión")
                         }
                     },
+                    containerColor = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     ConnectionsScreen(
@@ -75,14 +95,28 @@ class ConnectionsActivity : ComponentActivity() {
     ) {
         if (sessions.isEmpty()) {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No hay conexiones guardadas. Pulsa + para agregar una.")
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Icon(
+                        Icons.Default.Dns, 
+                        contentDescription = null, 
+                        modifier = Modifier.size(64.dp),
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        "No hay conexiones guardadas",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
+                }
             }
         } else {
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 80.dp)
             ) {
                 items(sessions) { session ->
                     ConnectionCard(session = session, onClick = { onSessionClick(session) })
@@ -97,7 +131,7 @@ class ConnectionsActivity : ComponentActivity() {
         
         LaunchedEffect(Unit) {
             while (true) {
-                delay(1000 * 30) // Actualizar cada 30 seg para más fluidez
+                delay(30000)
                 currentTime = System.currentTimeMillis()
             }
         }
@@ -110,45 +144,62 @@ class ConnectionsActivity : ComponentActivity() {
         Card(
             onClick = onClick,
             modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = session.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = session.dbName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    val statusText = if (isActive) "Sesión activa" else "Sesión inactiva"
-                    val statusColor = if (isActive) Color(0xFF4CAF50) else Color.Red
-                    
+            Row(
+                modifier = Modifier
+                    .padding(20.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = statusText,
+                        text = session.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = session.dbName,
                         style = MaterialTheme.typography.bodySmall,
-                        color = statusColor,
-                        fontWeight = FontWeight.Medium
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                     
-                    if (isActive) {
-                        Text(
-                            text = " • ",
-                            style = MaterialTheme.typography.bodySmall
+                    Spacer(modifier = Modifier.height(12.dp))
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(if (isActive) GreenSuccess else RedError)
                         )
-                        val minutesRemaining = secondsRemaining / 60
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Expira en $minutesRemaining min",
-                            style = MaterialTheme.typography.bodySmall
+                            text = if (isActive) "Sesión Activa" else "Sesión Inactiva",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (isActive) GreenSuccess else RedError,
+                            fontWeight = FontWeight.SemiBold
                         )
+                        
+                        if (isActive) {
+                            Text(
+                                text = " • Expira en ${secondsRemaining / 60} min",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
+                            )
+                        }
                     }
                 }
+                
+                Icon(
+                    imageVector = Icons.Default.Add, 
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

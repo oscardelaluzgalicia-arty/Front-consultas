@@ -8,10 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import com.example.sqlaris.ui.theme.SqlarisTheme
@@ -45,11 +49,10 @@ class TablesActivity : ComponentActivity() {
                         Toast.makeText(this@TablesActivity, "Error al obtener tablas: ${response.code()}", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(this@TablesActivity, "No hay sesión activa seleccionada", Toast.LENGTH_LONG).show()
                     finish()
                 }
             } catch (e: Exception) {
-                Toast.makeText(this@TablesActivity, "Error de red: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@TablesActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
             } finally {
                 isLoading.value = false
             }
@@ -60,9 +63,18 @@ class TablesActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         CenterAlignedTopAppBar(
-                            title = { Text("Tablas de la BD") }
+                            title = { Text("Esquema de BD", fontWeight = FontWeight.Bold) },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+                                }
+                            },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                            )
                         )
                     },
+                    containerColor = MaterialTheme.colorScheme.background,
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     TablesScreen(
@@ -85,21 +97,24 @@ class TablesActivity : ComponentActivity() {
             Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
-        } else if (tables.isEmpty()) {
-            Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("No se encontraron tablas.")
-            }
         } else {
-            LazyColumn(modifier = modifier.fillMaxSize().padding(16.dp)) {
+            LazyColumn(
+                modifier = modifier.fillMaxSize().padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(vertical = 16.dp)
+            ) {
                 items(tables) { table ->
                     Card(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                     ) {
                         Text(
                             text = table,
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.bodyLarge
+                            modifier = Modifier.padding(20.dp),
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
                         )
                     }
                 }

@@ -2,10 +2,23 @@ package com.example.sqlaris.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Reporting App Palette (High Contrast Dark)
+val ReportingRed = Color(0xFFFF003C) 
+val ReportingOrange = Color(0xFFFF8A00) 
+val ReportingCyan = Color(0xFF00FBFF) 
+val ReportingBlack = Color(0xFF050505) 
+val ReportingSurface = Color(0xFF121212) 
+val ReportingGray = Color(0xFF242424) 
+val ReportingWhite = Color(0xFFF5F5F5) 
+val ReportingMuted = Color(0xFF666666) 
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Semantic Mapping
+val BluePrimary = ReportingCyan
+val DarkSecondary = ReportingBlack
+val BackgroundSlate = ReportingBlack
+val CardWhite = ReportingSurface
+val TealAccent = ReportingRed
+val RedError = Color(0xFFEF4444)
+val TextDark = ReportingWhite
+val GreenSuccess = Color(0xFF22C55E)
+val SlateGray = ReportingMuted
