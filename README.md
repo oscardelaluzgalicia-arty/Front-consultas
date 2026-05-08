@@ -30,12 +30,12 @@ Toda la lógica de conexión y ejecución SQL se procesa desde el backend, mante
 ## Capturas de Pantalla
 
 <p align="center">
-  <img src="screenshots/screen1.png" width="220"/>
-  <img src="screenshots/screen2.png" width="220"/>
-  <img src="screenshots/screen3.png" width="220"/>
+  <img src="screenshots/screen1.jpeg" width="220"/>
+  <img src="screenshots/screen2.jpeg" width="220"/>
+  <img src="screenshots/screen3.jpeg" width="220"/>
 </p>
 
 <p align="center">
-  <img src="screenshots/screen4.png" width="220"/>
-  <img src="screenshots/screen5.png" width="220"/>
+  <img src="screenshots/screen4.jpeg" width="220"/>
+  <img src="screenshots/screen5.jpeg" width="220"/>
 </p>
