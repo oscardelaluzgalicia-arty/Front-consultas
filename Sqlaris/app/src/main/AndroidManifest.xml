@@ -26,7 +26,22 @@
         <activity
             android:name=".LoginActivity"
             android:exported="false"
-            android:label="Conexión a Base de Datos"
+            android:label="Nueva Conexión"
+            android:theme="@style/Theme.Sqlaris" />
+        <activity
+            android:name=".ConnectionsActivity"
+            android:exported="false"
+            android:label="Sqlaris-conecciones"
+            android:theme="@style/Theme.Sqlaris" />
+        <activity
+            android:name=".SessionDetailActivity"
+            android:exported="false"
+            android:label="Detalle de Sesión"
+            android:theme="@style/Theme.Sqlaris" />
+        <activity
+            android:name=".TablesActivity"
+            android:exported="false"
+            android:label="Tablas"
             android:theme="@style/Theme.Sqlaris" />
     </application>
 

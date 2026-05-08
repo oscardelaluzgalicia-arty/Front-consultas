@@ -34,7 +34,8 @@ class MainActivity : ComponentActivity() {
                     WelcomeScreen(
                         modifier = Modifier.padding(innerPadding),
                         onStartClicked = {
-                            startActivity(Intent(this, LoginActivity::class.java))
+                            // Ahora navegamos a la pantalla de conexiones
+                            startActivity(Intent(this, ConnectionsActivity::class.java))
                         }
                     )
                 }

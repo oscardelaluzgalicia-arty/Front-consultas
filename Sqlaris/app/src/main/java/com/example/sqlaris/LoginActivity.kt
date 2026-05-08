@@ -37,8 +37,8 @@ class LoginActivity : ComponentActivity() {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     LoginScreen(
                         modifier = Modifier.padding(innerPadding),
-                        onConnectClick = { host, user, pass, db ->
-                            performConnection(host, user, pass, db)
+                        onConnectClick = { name, host, user, pass, db ->
+                            performConnection(name, host, user, pass, db)
                         }
                     )
                 }
@@ -47,9 +47,8 @@ class LoginActivity : ComponentActivity() {
     }
 
     private var isLoading = mutableStateOf(false)
-    private var clearFormTrigger = mutableStateOf(0)
 
-    private fun performConnection(host: String, user: String, pass: String, db: String) {
+    private fun performConnection(name: String, host: String, user: String, pass: String, db: String) {
         lifecycleScope.launch {
             isLoading.value = true
             try {
@@ -59,9 +58,17 @@ class LoginActivity : ComponentActivity() {
                 if (response.isSuccessful && response.body() != null) {
                     val body = response.body()!!
                     if (body.connection == "Exitosa") {
-                        tokenManager.saveToken(body.token)
+                        val session = UserSession(
+                            name = name,
+                            token = body.token,
+                            expiresIn = 3600,
+                            issuedAt = System.currentTimeMillis(),
+                            status = "ACTIVE",
+                            dbName = db
+                        )
+                        tokenManager.saveSession(session)
                         Toast.makeText(this@LoginActivity, "Conexión Exitosa", Toast.LENGTH_SHORT).show()
-                        clearFormTrigger.value++
+                        finish() // Regresar a ConnectionsActivity
                     } else {
                         Toast.makeText(this@LoginActivity, "Error: ${body.connection}", Toast.LENGTH_LONG).show()
                     }
@@ -79,8 +86,9 @@ class LoginActivity : ComponentActivity() {
     @Composable
     fun LoginScreen(
         modifier: Modifier = Modifier,
-        onConnectClick: (String, String, String, String) -> Unit
+        onConnectClick: (String, String, String, String, String) -> Unit
     ) {
+        var name by remember { mutableStateOf("") }
         var host by remember { mutableStateOf("") }
         var user by remember { mutableStateOf("") }
         var pass by remember { mutableStateOf("") }
@@ -92,16 +100,6 @@ class LoginActivity : ComponentActivity() {
         var dbVisible by remember { mutableStateOf(false) }
 
         val loading by isLoading
-        val trigger by clearFormTrigger
-
-        LaunchedEffect(trigger) {
-            if (trigger > 0) {
-                host = ""
-                user = ""
-                pass = ""
-                dbName = ""
-            }
-        }
 
         Column(
             modifier = modifier
@@ -112,12 +110,22 @@ class LoginActivity : ComponentActivity() {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Configurar Conexión",
+                text = "Nueva Conexión",
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.primary
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Nombre de la Conexión (Local)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             SensitiveField(
                 value = host,
@@ -163,9 +171,9 @@ class LoginActivity : ComponentActivity() {
                 CircularProgressIndicator()
             } else {
                 Button(
-                    onClick = { onConnectClick(host, user, pass, dbName) },
+                    onClick = { onConnectClick(name, host, user, pass, dbName) },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = host.isNotBlank() && user.isNotBlank() && pass.isNotBlank() && dbName.isNotBlank()
+                    enabled = name.isNotBlank() && host.isNotBlank() && user.isNotBlank() && pass.isNotBlank() && dbName.isNotBlank()
                 ) {
                     Text("Conectar y Validar")
                 }
