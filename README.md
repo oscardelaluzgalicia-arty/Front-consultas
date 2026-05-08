@@ -26,3 +26,16 @@ La aplicación está diseñada para escenarios de:
 * exportación rápida de datasets empresariales
 
 Toda la lógica de conexión y ejecución SQL se procesa desde el backend, manteniendo la aplicación Android enfocada en la experiencia de usuario, visualización de resultados y administración de consultas de manera segura y flexible.
+
+## Capturas de Pantalla
+
+<p align="center">
+  <img src="screenshots/screen1.png" width="220"/>
+  <img src="screenshots/screen2.png" width="220"/>
+  <img src="screenshots/screen3.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/screen4.png" width="220"/>
+  <img src="screenshots/screen5.png" width="220"/>
+</p>
