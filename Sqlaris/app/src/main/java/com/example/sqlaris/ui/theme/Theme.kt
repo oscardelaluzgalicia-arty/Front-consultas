@@ -1,3 +1,4 @@
+// Global Update: Reporting System Visual Identity
 package com.example.sqlaris.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme

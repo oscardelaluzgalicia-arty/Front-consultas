@@ -1,3 +1,4 @@
+// Refactor: Unified High-Contrast Reporting Theme
 package com.example.sqlaris.ui.theme
 
 import androidx.compose.material3.Typography

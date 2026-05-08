@@ -1,3 +1,4 @@
+// Project Update: Reporting Visual System Integration
 package com.example.sqlaris
 
 import android.os.Bundle
@@ -110,7 +111,7 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     fun LoginScreen(
-        modifier: Modifier = Modifier,
+        modifier = Modifier = Modifier,
         onConnectClick: (String, String, String, String, String) -> Unit
     ) {
         var name by remember { mutableStateOf("") }

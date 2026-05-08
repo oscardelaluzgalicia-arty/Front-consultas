@@ -1,3 +1,4 @@
+// Project Update: Reporting Visual System Refactor
 package com.example.sqlaris.ui.theme
 
 import androidx.compose.ui.graphics.Color
